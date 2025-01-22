@@ -17,7 +17,8 @@ if 'instance' not in locals():
     ], dtype=int)
 
 print("Grille de Sudoku à résoudre :")
-print(instance)
+
+
 '''start = default_timer()
 # Exécuter la résolution de Sudoku
 if solve_sudoku(instance):
