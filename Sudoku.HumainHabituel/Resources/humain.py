@@ -16,15 +16,11 @@ if 'instance' not in locals():
         [0,4,0,9,7,0,0,0,0]
     ], dtype=int)
 
-print("Grille de Sudoku à résoudre :")
-
-
-'''start = default_timer()
+start = default_timer()
 # Exécuter la résolution de Sudoku
-if solve_sudoku(instance):
-    # print("Sudoku résolu par backtracking avec succès.")
-    result = instance  # `result` sera utilisé pour récupérer la grille résolue depuis C#
-else:
-    print("Aucune solution trouvée.")
+
+result = instance  # `result` sera utilisé pour récupérer la grille résolue depuis C#
+
+print("Aucune solution trouvée.")
 execution = default_timer() - start
-print("Le temps de résolution est de : ", execution * 1000, " ms")'''
+print("Le temps de résolution est de : ", execution * 1000, " ms")
