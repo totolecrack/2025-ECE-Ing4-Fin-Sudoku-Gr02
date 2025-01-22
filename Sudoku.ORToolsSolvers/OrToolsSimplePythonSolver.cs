@@ -50,6 +50,8 @@ public class OrToolsSimplePythonSolver : PythonSolverBase
 		{
 			//declare your pip packages here
 			InstallPipModule("numpy");
+			InstallPipModule("ortools");
+
 			base.InitializePythonComponents();
 		}
 
