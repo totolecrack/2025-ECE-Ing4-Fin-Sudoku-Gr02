@@ -6,6 +6,7 @@ public class RecuitSimuleSolverSimple : ISudokuSolver
 {
     public SudokuGrid Solve(SudokuGrid s)
     {
+ 
        return s;
     }
 }
