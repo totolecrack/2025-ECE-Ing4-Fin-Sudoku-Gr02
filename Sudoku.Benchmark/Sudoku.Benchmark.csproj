@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Sudoku.RecuitSimule.Solvers\Sudoku.RecuitSimule.Solvers.csproj" />
     <ProjectReference Include="..\Sudoku.Shared\Sudoku.Shared.csproj" />
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
+    <ProjectReference Include="..\Sudoku.HumainHabituel\Sudoku.HumainHabituel.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
