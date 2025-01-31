@@ -7,47 +7,44 @@ namespace sudoku.Z3Solver
 {
     public class Z3Solver : ISudokuSolver
     {
-        public SudokuGrid Solve(SudokuGrid s)
+public SudokuGrid Solve(SudokuGrid s)
         {
-            // Initialisation du contexte Z3
             using (Context ctx = new Context())
             {
+                var solverParams = ctx.MkParams();
+                solverParams.Add("auto_config", true);
+                solverParams.Add("smt.arith.solver", 2);
+
                 Solver solver = ctx.MkSolver();
+                solver.Parameters = solverParams;
 
-                // Étape 1 : Déclarer les variables
-                IntExpr[,] cells = DeclareVariables(ctx, solver);
-
-                // Étape 2 : Ajouter les contraintes du Sudoku
+                BitVecExpr[,] cells = DeclareVariables(ctx, solver);
                 AddSudokuConstraints(ctx, solver, cells);
-
-                // Étape 3 : Ajouter les contraintes des valeurs connues
                 FixInitialValues(ctx, solver, s, cells);
 
-                // Étape 4 : Résolution du Sudoku
                 return SolveSudoku(solver, cells, s);
             }
         }
 
-        // Déclarer les variables du Sudoku sous forme d'entiers (1-9)
-        private IntExpr[,] DeclareVariables(Context ctx, Solver solver)
+        private BitVecExpr[,] DeclareVariables(Context ctx, Solver solver)
         {
-            IntExpr[,] cells = new IntExpr[9, 9];
-
+            BitVecExpr[,] cells = new BitVecExpr[9, 9];
             for (int row = 0; row < 9; row++)
             {
                 for (int col = 0; col < 9; col++)
                 {
-                    cells[row, col] = (IntExpr)ctx.MkIntConst($"cell_{row}_{col}");
-                    // Chaque cellule doit être un nombre entre 1 et 9
-                    solver.Add(ctx.MkAnd(ctx.MkLe(ctx.MkInt(1), cells[row, col]), ctx.MkLe(cells[row, col], ctx.MkInt(9))));
+                    cells[row, col] = ctx.MkBVConst($"cell_{row}_{col}", 4);
+                    // Correction : Utiliser MkBVULE (Unsigned Less Than or Equal)
+                    solver.Add(ctx.MkAnd(
+                        ctx.MkBVULE(ctx.MkBV(1, 4), cells[row, col]), // 1 <= cell (non-signé)
+                        ctx.MkBVULE(cells[row, col], ctx.MkBV(9, 4))  // cell <= 9 (non-signé)
+                    ));
                 }
             }
-
             return cells;
         }
 
-        // Ajouter les contraintes du Sudoku (lignes, colonnes, blocs 3x3)
-        private void AddSudokuConstraints(Context ctx, Solver solver, IntExpr[,] cells)
+        private void AddSudokuConstraints(Context ctx, Solver solver, BitVecExpr[,] cells)
         {
             for (int i = 0; i < 9; i++)
             {
@@ -64,8 +61,7 @@ namespace sudoku.Z3Solver
             }
         }
 
-        // Fixer les valeurs données dans la grille initiale
-        private void FixInitialValues(Context ctx, Solver solver, SudokuGrid s, IntExpr[,] cells)
+        private void FixInitialValues(Context ctx, Solver solver, SudokuGrid s, BitVecExpr[,] cells)
         {
             for (int row = 0; row < 9; row++)
             {
@@ -73,14 +69,14 @@ namespace sudoku.Z3Solver
                 {
                     if (s.Cells[row, col] != 0)
                     {
-                        solver.Add(ctx.MkEq(cells[row, col], ctx.MkInt(s.Cells[row, col])));
+                        // Correction : Utiliser MkBV avec une interprétation non-signée
+                        solver.Add(ctx.MkEq(cells[row, col], ctx.MkBV(s.Cells[row, col], 4)));
                     }
                 }
             }
         }
 
-        // Résoudre le Sudoku et retourner la grille mise à jour
-        private SudokuGrid SolveSudoku(Solver solver, IntExpr[,] cells, SudokuGrid s)
+        private SudokuGrid SolveSudoku(Solver solver, BitVecExpr[,] cells, SudokuGrid s)
         {
             if (solver.Check() == Status.SATISFIABLE)
             {
@@ -91,20 +87,20 @@ namespace sudoku.Z3Solver
                 {
                     for (int col = 0; col < 9; col++)
                     {
-                        solvedGrid.Cells[row, col] = int.Parse(model.Eval(cells[row, col]).ToString());
+                        // Extraction sécurisée de la valeur
+                        solvedGrid.Cells[row, col] = (int)((BitVecNum)model.Eval(cells[row, col])).UInt64;
                     }
                 }
-
                 return solvedGrid;
             }
             else
             {
-                throw new Exception("Impossible de résoudre le Sudoku.");
+                throw new Exception("Aucune solution trouvée pour cette grille.");
             }
         }
 
         // Méthodes auxiliaires pour récupérer les lignes, colonnes et blocs
-        private Expr[] GetRow(IntExpr[,] grid, int row)
+        private Expr[] GetRow(BitVecExpr[,] grid, int row)
         {
             Expr[] rowValues = new Expr[9];
             for (int col = 0; col < 9; col++)
@@ -114,7 +110,7 @@ namespace sudoku.Z3Solver
             return rowValues;
         }
 
-        private Expr[] GetColumn(IntExpr[,] grid, int col)
+        private Expr[] GetColumn(BitVecExpr[,] grid, int col)
         {
             Expr[] colValues = new Expr[9];
             for (int row = 0; row < 9; row++)
@@ -124,7 +120,7 @@ namespace sudoku.Z3Solver
             return colValues;
         }
 
-        private Expr[] GetBox(IntExpr[,] grid, int boxRow, int boxCol)
+        private Expr[] GetBox(BitVecExpr[,] grid, int boxRow, int boxCol)
         {
             List<Expr> boxValues = new List<Expr>();
             for (int row = 0; row < 3; row++)
