@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.RecuitSimule.Solvers
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.HumainHabituel", "Sudoku.HumainHabituel\Sudoku.HumainHabituel.csproj", "{F8B743C7-9C07-4758-8F1E-8D7F14ABDCA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.ORToolsSolvers2", "Sudoku.ORToolsSolvers2\Sudoku.ORToolsSolvers2.csproj", "{3188DE86-DB0D-4CBA-BF1A-2F66C787C14D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{F8B743C7-9C07-4758-8F1E-8D7F14ABDCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8B743C7-9C07-4758-8F1E-8D7F14ABDCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8B743C7-9C07-4758-8F1E-8D7F14ABDCA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3188DE86-DB0D-4CBA-BF1A-2F66C787C14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3188DE86-DB0D-4CBA-BF1A-2F66C787C14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3188DE86-DB0D-4CBA-BF1A-2F66C787C14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3188DE86-DB0D-4CBA-BF1A-2F66C787C14D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
