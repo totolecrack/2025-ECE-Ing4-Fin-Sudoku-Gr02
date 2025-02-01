@@ -266,7 +266,7 @@ namespace Sudoku.Shared
 		protected void AddNumpyConverterScript(PyModule scope)
         {
 			string numpyConverterCode = Resources.numpy_converter_py;
-			scope.Exec(numpyConverterCode);
+		    scope.Exec(numpyConverterCode);
 		}
 
 
